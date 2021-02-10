@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CamXDemo</string>
+    <string name="get_picture">Get Picture</string>
+    <string name="take_picture">Take a New Picture</string>
+    <string name="clickpicture">ClickPicture</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="cancel">Cancel</string>
+</resources>
