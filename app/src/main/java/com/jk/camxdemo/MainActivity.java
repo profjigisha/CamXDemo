@@ -1,9 +1,14 @@
 package com.jk.camxdemo;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +21,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView imgPicture;
     private Button btnGetPicture;
 
+    private final int GALLERY_PICTURE_REQUEST_CODE = 102;
+    private final int CAMERA_PERMISSION_REQUEST_CODE = 103;
+    private final String[] permissionsArray = new String[]{
+            Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnGetPicture = findViewById(R.id.btnGetPicture);
         btnGetPicture.setOnClickListener(this);
+
+        this.checkPermissions();
     }
 
     @Override
@@ -48,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                     break;
                                 case 1:
-                                    Log.d(TAG, "Getting Picture drom Gallery");
+                                    Log.d(TAG, "Getting Picture from Gallery");
                                     break;
                                 case 2:
                                     dialogInterface.dismiss();
@@ -65,4 +78,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    private void checkPermissions(){
+        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) &&
+        !(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)){
+
+            this.btnGetPicture.setEnabled(false);
+            ActivityCompat.requestPermissions(this, this.permissionsArray, this.CAMERA_PERMISSION_REQUEST_CODE);
+        }else{
+            Log.e(TAG, "Camera permission granted");
+            Log.e(TAG, "External storage write permission granted");
+            this.btnGetPicture.setEnabled(true);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            this.btnGetPicture.setEnabled(true);
+        }
+    }
 }
