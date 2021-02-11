@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -91,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openCamera(){
-
+        Intent camIntent = new Intent(this, CamXActivity.class);
+        startActivityForResult(camIntent, CAMERA_PERMISSION_REQUEST_CODE);
     }
 
     @Override
@@ -100,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (resultCode == Activity.RESULT_OK && requestCode == GALLERY_PICTURE_REQUEST_CODE && data != null){
             this.imgPicture.setImageURI(data.getData());
+        }else if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_PERMISSION_REQUEST_CODE && data != null){
+            Uri uri = data.getParcelableExtra("EXTRA_PICTURE_URI");
+            this.imgPicture.setImageURI(uri);
         }
     }
 
